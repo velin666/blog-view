@@ -2,7 +2,7 @@ export default {
   title: 'xx合集',
   description: 'xx合集展示',
   theme: 'reco',
-  base: '/blog-view/',
+  base: '/blog-view-pro/',
   locales: {
     '/': {
       lang: 'zh-CN',

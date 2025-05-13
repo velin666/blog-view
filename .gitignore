@@ -16,7 +16,7 @@ coverage
 
 /cypress/videos/
 /cypress/screenshots/
-/.vuepress/dist/
+/.vuepress/dist/*
 
 # Editor directories and files
 .vscode/*
