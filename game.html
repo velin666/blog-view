@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>浪漫华容道</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#FF7EB9',
+            secondary: '#A8DADC',
+            accent: '#FFB7D5',
+            neutral: '#F8F9FA',
+            dark: '#2D3748'
+          },
+          fontFamily: {
+            inter: ['Inter', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
+  <style type="text/tailwindcss">
+    @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .bg-blur {
+                backdrop-filter: blur(8px);
+            }
+            .text-shadow {
+                text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+            .puzzle-grid-9 {
+                grid-template-columns: repeat(3, 1fr);
+                grid-template-rows: repeat(3, 1fr);
+            }
+            .puzzle-grid-16 {
+                grid-template-columns: repeat(4, 1fr);
+                grid-template-rows: repeat(4, 1fr);
+            }
+            .puzzle-grid-25 {
+                grid-template-columns: repeat(5, 1fr);
+                grid-template-rows: repeat(5, 1fr);
+            }
+            .animate-float {
+                animation: float 3s ease-in-out infinite;
+            }
+            @keyframes float {
+                0% { transform: translateY(0px); }
+                50% { transform: translateY(-10px); }
+                100% { transform: translateY(0px); }
+            }
+            .animate-scale {
+                animation: scale 0.5s ease-in-out;
+            }
+            @keyframes scale {
+                0% { transform: scale(0.9); }
+                50% { transform: scale(1.05); }
+                100% { transform: scale(1); }
+            }
+        }
+    </style>
+</head>
+
+<body class="font-inter bg-gradient-to-br from-pink-50 to-blue-50 min-h-screen overflow-x-hidden">
+  <!-- 音效元素 -->
+  <audio id="bgMusic" loop>
+    <source src="https://assets.mixkit.co/music/preview/mixkit-ambient-synth-fusion-169.mp3" type="audio/mpeg">
+  </audio>
+  <audio id="moveSound">
+    <source src="https://assets.mixkit.co/sfx/preview/mixkit-arcade-game-jump-coin-216.mp3" type="audio/mpeg">
+  </audio>
+  <audio id="successSound">
+    <source src="https://assets.mixkit.co/sfx/preview/mixkit-achievement-bell-600.mp3" type="audio/mpeg">
+  </audio>
+  <audio id="buttonClick">
+    <source src="https://assets.mixkit.co/sfx/preview/mixkit-interface-click-tone-2564.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- 页面一：主菜单 -->
+  <div id="page1" class="min-h-screen flex flex-col items-center justify-center p-4 transition-opacity duration-500">
+    <div
+      class="w-full max-w-md bg-white/80 backdrop-blur-md rounded-2xl shadow-xl p-6 md:p-8 transform transition-all duration-500 hover:shadow-2xl">
+      <div class="text-center mb-8">
+        <h1
+          class="text-[clamp(2rem,5vw,3rem)] font-bold text-transparent bg-clip-text bg-gradient-to-r from-primary to-purple-500 mb-2 text-shadow">
+          浪漫华容道</h1>
+        <p class="text-gray-600 text-lg">用您的照片创造温馨回忆</p>
+      </div>
+
+      <div class="aspect-square w-full bg-neutral rounded-xl overflow-hidden mb-6 relative group">
+        <img id="previewImage" src="https://picsum.photos/seed/love/800/800" alt="游戏图片预览"
+          class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+        <div
+          class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-4">
+          <span class="text-white font-medium text-shadow">点击更换图片</span>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-3 gap-3 mb-6">
+        <button
+          class="bg-white border-2 border-primary text-primary rounded-lg py-2 px-4 transition-all duration-300 hover:bg-primary/10 active:scale-95 flex flex-col items-center justify-center sound-button"
+          data-sound="buttonClick">
+          <i class="fa fa-plus text-xl mb-1"></i>
+          <span class="text-sm">新增图片</span>
+        </button>
+        <button
+          class="bg-white border-2 border-gray-300 text-gray-600 rounded-lg py-2 px-4 transition-all duration-300 hover:bg-gray-100 active:scale-95 flex flex-col items-center justify-center sound-button"
+          data-sound="buttonClick">
+          <i class="fa fa-trash text-xl mb-1"></i>
+          <span class="text-sm">删除图片</span>
+        </button>
+        <button
+          class="bg-white border-2 border-gray-300 text-gray-600 rounded-lg py-2 px-4 transition-all duration-300 hover:bg-gray-100 active:scale-95 flex flex-col items-center justify-center sound-button"
+          data-sound="buttonClick">
+          <i class="fa fa-image text-xl mb-1"></i>
+          <span class="text-sm">图库</span>
+        </button>
+      </div>
+
+      <div class="mb-8">
+        <h3 class="text-gray-700 font-medium mb-3">选择难度</h3>
+        <div class="grid grid-cols-3 gap-3">
+          <button
+            class="bg-primary text-white rounded-lg py-3 px-4 transition-all duration-300 hover:bg-primary/90 active:scale-95 flex flex-col items-center justify-center sound-button"
+            data-sound="buttonClick">
+            <span class="text-lg font-semibold">3×3</span>
+            <span class="text-xs mt-1">简单</span>
+          </button>
+          <button
+            class="bg-white border border-gray-300 text-gray-700 rounded-lg py-3 px-4 transition-all duration-300 hover:bg-gray-100 active:scale-95 flex flex-col items-center justify-center sound-button"
+            data-sound="buttonClick">
+            <span class="text-lg font-semibold">4×4</span>
+            <span class="text-xs mt-1">中等</span>
+          </button>
+          <button
+            class="bg-white border border-gray-300 text-gray-700 rounded-lg py-3 px-4 transition-all duration-300 hover:bg-gray-100 active:scale-95 flex flex-col items-center justify-center sound-button"
+            data-sound="buttonClick">
+            <span class="text-lg font-semibold">5×5</span>
+            <span class="text-xs mt-1">困难</span>
+          </button>
+        </div>
+      </div>
+
+      <button id="startButton"
+        class="w-full bg-gradient-to-r from-primary to-purple-500 text-white font-bold py-4 px-6 rounded-xl shadow-lg transition-all duration-300 hover:shadow-xl hover:from-primary/90 hover:to-purple-500/90 active:scale-98 flex items-center justify-center sound-button"
+        data-sound="buttonClick">
+        <span>开始游戏</span>
+        <i class="fa fa-arrow-right ml-2"></i>
+      </button>
+    </div>
+
+    <div class="mt-8 text-center text-gray-500 text-sm">
+      <p>滑动拼图 · 浪漫体验</p>
+    </div>
+  </div>
+
+  <!-- 页面二：游戏界面 -->
+  <div id="page2" class="min-h-screen flex flex-col items-center justify-center p-4 hidden">
+    <div class="w-full max-w-md">
+      <div class="flex justify-between items-center mb-4">
+        <div class="bg-white/80 backdrop-blur-md rounded-xl shadow-lg p-3 flex items-center">
+          <i class="fa fa-clock-o text-primary mr-2"></i>
+          <span class="font-semibold text-dark">01:30</span>
+        </div>
+        <button id="refreshButton"
+          class="bg-white/80 backdrop-blur-md rounded-xl shadow-lg p-3 transition-all duration-300 hover:bg-white active:scale-95 sound-button"
+          data-sound="buttonClick">
+          <i class="fa fa-refresh text-primary"></i>
+        </button>
+      </div>
+
+      <div class="aspect-square w-full bg-white/80 backdrop-blur-md rounded-2xl shadow-xl p-4 mb-6">
+        <div class="h-full w-full rounded-xl overflow-hidden bg-neutral grid puzzle-grid-9 gap-1.5">
+          <!-- 3x3 华容道示例 -->
+          <div class="bg-white rounded-lg overflow-hidden shadow-md relative puzzle-piece cursor-pointer sound-button"
+            data-sound="moveSound">
+            <img src="https://picsum.photos/seed/love1/200/200" alt="拼图块" class="w-full h-full object-cover">
+          </div>
+          <div class="bg-white rounded-lg overflow-hidden shadow-md relative puzzle-piece cursor-pointer sound-button"
+            data-sound="moveSound">
+            <img src="https://picsum.photos/seed/love2/200/200" alt="拼图块" class="w-full h-full object-cover">
+          </div>
+          <div class="bg-white rounded-lg overflow-hidden shadow-md relative puzzle-piece cursor-pointer sound-button"
+            data-sound="moveSound">
+            <img src="https://picsum.photos/seed/love3/200/200" alt="拼图块" class="w-full h-full object-cover">
+          </div>
+          <div class="bg-white rounded-lg overflow-hidden shadow-md relative puzzle-piece cursor-pointer sound-button"
+            data-sound="moveSound">
+            <img src="https://picsum.photos/seed/love4/200/200" alt="拼图块" class="w-full h-full object-cover">
+          </div>
+          <div class="bg-white rounded-lg overflow-hidden shadow-md relative puzzle-piece cursor-pointer sound-button"
+            data-sound="moveSound">
+            <img src="https://picsum.photos/seed/love5/200/200" alt="拼图块" class="w-full h-full object-cover">
+          </div>
+          <div class="bg-white rounded-lg overflow-hidden shadow-md relative puzzle-piece cursor-pointer sound-button"
+            data-sound="moveSound">
+            <img src="https://picsum.photos/seed/love6/200/200" alt="拼图块" class="w-full h-full object-cover">
+          </div>
+          <div class="bg-white rounded-lg overflow-hidden shadow-md relative puzzle-piece cursor-pointer sound-button"
+            data-sound="moveSound">
+            <img src="https://picsum.photos/seed/love7/200/200" alt="拼图块" class="w-full h-full object-cover">
+          </div>
+          <div class="bg-white rounded-lg overflow-hidden shadow-md relative puzzle-piece cursor-pointer sound-button"
+            data-sound="moveSound">
+            <img src="https://picsum.photos/seed/love8/200/200" alt="拼图块" class="w-full h-full object-cover">
+          </div>
+          <div class="bg-neutral/50 rounded-lg"></div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-4">
+        <button id="homeButton"
+          class="bg-white/80 backdrop-blur-md text-primary font-medium py-3 px-6 rounded-xl shadow-lg transition-all duration-300 hover:bg-white active:scale-95 flex items-center justify-center sound-button"
+          data-sound="buttonClick">
+          <i class="fa fa-home mr-2"></i>
+          <span>返回主页</span>
+        </button>
+        <button id="hintButton"
+          class="bg-white/80 backdrop-blur-md text-primary font-medium py-3 px-6 rounded-xl shadow-lg transition-all duration-300 hover:bg-white active:scale-95 flex items-center justify-center sound-button"
+          data-sound="buttonClick">
+          <i class="fa fa-lightbulb-o mr-2"></i>
+          <span>提示</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 通关弹窗 (默认隐藏) -->
+  <div id="successModal"
+    class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 hidden">
+    <div
+      class="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full mx-4 transform transition-all duration-500 scale-95 opacity-0"
+      id="modalContent">
+      <div class="text-center">
+        <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4 animate-float">
+          <i class="fa fa-check text-3xl text-green-500"></i>
+        </div>
+        <h2 class="text-[clamp(1.5rem,3vw,2rem)] font-bold text-dark mb-2">恭喜通关！</h2>
+        <p class="text-gray-600 mb-6">你成功完成了浪漫华容道挑战</p>
+
+        <div class="bg-neutral/30 rounded-lg p-4 mb-6">
+          <div class="flex justify-between items-center mb-2">
+            <span class="text-gray-700">用时</span>
+            <span class="font-semibold text-dark">00:45</span>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="text-gray-700">步数</span>
+            <span class="font-semibold text-dark">28步</span>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <button id="playAgainButton"
+            class="bg-gradient-to-r from-primary to-purple-500 text-white font-medium py-3 px-6 rounded-xl shadow-lg transition-all duration-300 hover:shadow-xl hover:from-primary/90 hover:to-purple-500/90 active:scale-95 sound-button"
+            data-sound="buttonClick">
+            再玩一次
+          </button>
+          <button id="homeFromModalButton"
+            class="bg-white border border-gray-300 text-gray-700 font-medium py-3 px-6 rounded-xl shadow-md transition-all duration-300 hover:bg-gray-50 active:scale-95 sound-button"
+            data-sound="buttonClick">
+            返回主页
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 音乐控制按钮 -->
+  <div class="fixed bottom-4 right-4 z-40">
+    <button id="musicToggle"
+      class="bg-white/80 backdrop-blur-md rounded-full p-3 shadow-lg transition-all duration-300 hover:bg-white active:scale-95 sound-button"
+      data-sound="buttonClick">
+      <i id="musicIcon" class="fa fa-volume-up text-primary"></i>
+    </button>
+  </div>
+
+  <script>
+    // 音频元素
+    const bgMusic = document.getElementById('bgMusic');
+    const moveSound = document.getElementById('moveSound');
+    const successSound = document.getElementById('successSound');
+    const buttonClick = document.getElementById('buttonClick');
+    const musicToggle = document.getElementById('musicToggle');
+    const musicIcon = document.getElementById('musicIcon');
+
+    let isMusicPlaying = false;
+
+    // 播放背景音乐
+    function playBackgroundMusic() {
+      if (!isMusicPlaying) {
+        bgMusic.volume = 0.3;
+        bgMusic.play().catch(e => console.log('自动播放背景音乐失败:', e));
+        isMusicPlaying = true;
+        musicIcon.classList.remove('fa-volume-off');
+        musicIcon.classList.add('fa-volume-up');
+      }
+    }
+
+    // 停止背景音乐
+    function stopBackgroundMusic() {
+      if (isMusicPlaying) {
+        bgMusic.pause();
+        bgMusic.currentTime = 0;
+        isMusicPlaying = false;
+        musicIcon.classList.remove('fa-volume-up');
+        musicIcon.classList.add('fa-volume-off');
+      }
+    }
+
+    // 切换背景音乐状态
+    function toggleBackgroundMusic() {
+      if (isMusicPlaying) {
+        stopBackgroundMusic();
+      } else {
+        playBackgroundMusic();
+      }
+    }
+
+    // 播放音效
+    function playSound(soundId) {
+      const sound = document.getElementById(soundId);
+      if (sound) {
+        sound.currentTime = 0;
+        sound.volume = 0.5;
+        sound.play().catch(e => console.log('播放音效失败:', e));
+      }
+    }
+
+    // 为所有带 sound-button 类的元素添加点击音效
+    document.addEventListener('click', function (e) {
+      if (e.target.classList.contains('sound-button') || e.target.parentElement.classList.contains('sound-button')) {
+        const target = e.target.classList.contains('sound-button') ? e.target : e.target.parentElement;
+        const soundId = target.dataset.sound;
+        if (soundId) {
+          playSound(soundId);
+        }
+      }
+    });
+
+    // 页面加载时初始化
+    document.addEventListener('DOMContentLoaded', function () {
+      // 为音乐控制按钮添加事件
+      musicToggle.addEventListener('click', toggleBackgroundMusic);
+
+      // 模拟用户交互后播放背景音乐
+      document.querySelector('body').addEventListener('click', function startMusicAfterInteraction() {
+        playBackgroundMusic();
+        document.querySelector('body').removeEventListener('click', startMusicAfterInteraction);
+      });
+
+      // 页面切换模拟
+      document.getElementById('startButton').addEventListener('click', function () {
+        document.getElementById('page1').classList.add('opacity-0');
+        setTimeout(() => {
+          document.getElementById('page1').classList.add('hidden');
+          document.getElementById('page2').classList.remove('hidden');
+          setTimeout(() => {
+            document.getElementById('page2').classList.add('opacity-100');
+          }, 50);
+        }, 500);
+      });
+
+      // 主页按钮
+      document.getElementById('homeButton').addEventListener('click', function () {
+        document.getElementById('page2').classList.remove('opacity-100');
+        setTimeout(() => {
+          document.getElementById('page2').classList.add('hidden');
+          document.getElementById('page1').classList.remove('hidden');
+          setTimeout(() => {
+            document.getElementById('page1').classList.remove('opacity-0');
+          }, 50);
+        }, 500);
+      });
+
+      // 从弹窗返回主页
+      document.getElementById('homeFromModalButton').addEventListener('click', function () {
+        document.getElementById('modalContent').classList.remove('scale-100', 'opacity-100');
+        document.getElementById('modalContent').classList.add('scale-95', 'opacity-0');
+        setTimeout(() => {
+          document.getElementById('successModal').classList.add('hidden');
+          document.getElementById('page2').classList.remove('opacity-100');
+          setTimeout(() => {
+            document.getElementById('page2').classList.add('hidden');
+            document.getElementById('page1').classList.remove('hidden');
+            setTimeout(() => {
+              document.getElementById('page1').classList.remove('opacity-0');
+            }, 50);
+          }, 500);
+        }, 500);
+      });
+
+      // 再玩一次
+      document.getElementById('playAgainButton').addEventListener('click', function () {
+        document.getElementById('modalContent').classList.remove('scale-100', 'opacity-100');
+        document.getElementById('modalContent').classList.add('scale-95', 'opacity-0');
+        setTimeout(() => {
+          document.getElementById('successModal').classList.add('hidden');
+          // 这里可以添加重新开始游戏的逻辑
+        }, 500);
+      });
+
+      // 刷新按钮
+      document.getElementById('refreshButton').addEventListener('click', function () {
+        // 模拟刷新动画
+        const puzzleContainer = document.querySelector('.grid');
+        puzzleContainer.classList.add('animate-scale');
+        setTimeout(() => {
+          puzzleContainer.classList.remove('animate-scale');
+        }, 500);
+      });
+
+      // 通关弹窗动画
+      setTimeout(() => {
+        document.getElementById('successModal').classList.remove('hidden');
+        playSound('successSound');
+        setTimeout(() => {
+          document.getElementById('modalContent').classList.remove('scale-95', 'opacity-0');
+          document.getElementById('modalContent').classList.add('scale-100', 'opacity-100');
+        }, 100);
+      }, 8000);
+
+      // 拼图块点击效果
+      document.querySelectorAll('.puzzle-piece').forEach(piece => {
+        piece.addEventListener('click', function () {
+          // 模拟拼图移动效果
+          this.classList.add('animate-scale');
+          setTimeout(() => {
+            this.classList.remove('animate-scale');
+          }, 300);
+        });
+      });
+    });
+  </script>
+</body>
+
+</html>

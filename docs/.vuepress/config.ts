@@ -12,8 +12,11 @@ export default {
     nav: [
       { text: '首页', link: '/' },
       {
-        text: '宇霖的 web 博客',
-        items: [{ text: 'Github', link: 'https://github.com/velin666' }],
+        text: '宇霖的 h5',
+        items: [
+          { text: 'Github', link: 'https://github.com/velin666' },
+          { text: '786168197@qq.com', link: '786168197@qq.com' },
+        ],
       },
     ],
     logo: '/assets/img/logo.png',

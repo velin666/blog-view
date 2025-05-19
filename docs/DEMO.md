@@ -17,6 +17,12 @@ markdowm教程 <https://markdown.com.cn/basic-syntax/links.html>
 > 哈哈哈哈 :joy:
 >> 未知
 
+### 表格
+| title | name | value | score |
+|:---|:---:|---:| --- |
+| t1 | n1 | v1 | s1 |
+| tt2 | nn2 | vv2 | ss2 |
+
 ```html
 <p>ddd</p>
 <div>5555</div>
